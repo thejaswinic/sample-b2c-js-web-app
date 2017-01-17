@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html> 
+    <head><h2 style="margin-left:25%">B2C Sample App</h2> 
+     <style>
+        html {
+        display: table;
+        margin: auto;
+        }
+
+        body {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script>
+        function login(policyName)
+        {            
+            $.get("b2csettings.json", 
+            function(data){
+                if(policyName =="signin")
+                {
+                    policyName = data.signIn_policyName;
+                }
+                else if(policyName == "signup")
+                {
+                    policyName = data.signUp_policyName;
+                }
+                else
+                {
+                    policyName = data.susi_policyName;
+                }
+                window.location = "https://login.microsoftonline.com/"+data.tenant_name+"/oauth2/v2.0/authorize?p="+policyName+
+                "&scope=openid profile offline_access "+data.client_id+
+                "&response_type="+data.response_type+
+                "&redirect_uri="+data.redirect_uri+
+                "&client_id="+data.client_id+
+                "&state="+data.state;
+            });     
+        }
+
+        function corsTest(){
+            $.get("https://localhost:85/signinsignuppage.htm", function(data){
+                $('#dump').html(data);
+            } );
+        }
+    </script>
+    </head>
+    <body>
+        <br>
+        <br>
+        <table style="height: auto">
+            <tr style="height: auto">  
+                <th><button id="login"  class="btn btn-default"  style="margin-right: 20px;height: auto" onclick="login('signin')">Login with SignIn Policy</button></th>   
+                <th><button id="login"  class="btn btn-default"  style="margin-right: 20px;height: auto" onclick="login('signup')">SignUp with SignUp Policy</button></th>
+                <th><button id="login"  class="btn btn-default" style="height: auto" onclick="login('susi')">Login/SignUp with Unified SignIn SignUp Policy</button></th>
+            </tr>
+        </table>
+     <button id="testCors"  class="btn btn-default" style="display: none" onclick="corsTest()">Test Cors</button>
+     <br>      
+    </body>    
+ </html>

@@ -1,0 +1,17 @@
+{
+    "tenant_name" : "testb2clocalhost.onmicrosoft.com",
+    "client_id": "772d007a-a5aa-4fe3-b600-15e63bd0ee74",
+    "redirect_uri":"https://localhost:85/b2cresponse.htm",
+    "response_type" : "code id_token",
+    "client_secret" : "JOX2;$qgr11BZZjU",
+    "signIn_policyName":"b2c_1_signin",
+    "signUp_policyName":"b2c_1_signup",
+    "susi_policyName":"b2c_1_signupsignin",
+    "profileEdit_policyName":"b2c_1_profileedit",
+    "passwordReset_policyName":"b2c_1_passwordreset",
+    "policyName":"b2c_1_signupsignin",
+    "state":"this is a js sample app"
+}
+
+
+            
