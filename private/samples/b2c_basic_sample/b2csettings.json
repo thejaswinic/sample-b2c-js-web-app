@@ -1,16 +1,36 @@
 {
-    "tenant_name" : "testb2clocalhost.onmicrosoft.com",
-    "client_id": "772d007a-a5aa-4fe3-b600-15e63bd0ee74",
-    "redirect_uri":"https://localhost:85/b2cresponse.htm",
-    "response_type" : "code id_token",
-    "client_secret" : "JOX2;$qgr11BZZjU",
-    "signIn_policyName":"b2c_1_signin",
-    "signUp_policyName":"b2c_1_signup",
-    "susi_policyName":"b2c_1_signupsignin",
-    "profileEdit_policyName":"b2c_1_profileedit",
-    "passwordReset_policyName":"b2c_1_passwordreset",
-    "policyName":"b2c_1_signupsignin",
-    "state":"this is a js sample app"
+    "tenant_name" : "cpimtestloctc.onmicrosoft.com",
+    "client_id": "2fb8d49d-d789-4fba-aaea-27ce1d35c76c",
+    "redirect_uri":"https://localhost:855/b2cresponse.htm",
+    "client_secret" : "xO;XE07m^ZmbJPnD",
+    "policy":[
+        "B2C_1_si",
+        "B2C_1_si_mfa"
+        "B2C_1_su",
+        "B2C_1_su_mfa",
+        "B2C_1_susi",
+        "B2C_1_susi_mfa",
+        "B2C_1_susi_optional_email",
+        "B2C_1_pr",
+        "B2C_1_pr_mfa"
+        ],
+    "response_types":[
+        "code",
+        "token",
+        "id_token",
+        "code id_token",
+        "code token",
+        "token id_token",
+         "code id_token token",
+         "id_token token"
+         ],
+    "scope":["openid",
+     "https://webscouttst.onmicrosoft.com/dndresource.read",
+     "https://webscouttst.onmicrosoft.com/dndresource.write",
+     "https://www.example.com/profile.write",
+     "https://www.example.com/profile.read" ],
+    "state":"this is a js sample app",
+    "ui_locales":[" বাংলা    [bn]","čeština    [cs]","dansk    [da]","Deutsch    [de]","Ελληνικά    [el]","English    [en]","español    [es]","suomi    [fi]","français    [fr]","ગુજરાતી    [gu]","עברית    [he]"," हिंदी    [hi]","hrvatski    [hr]","magyar    [hu]","italiano    [it]","日本語    [ja]","ಕನ್ನಡ    [kn]","한국어    [ko]"," മലയാളം    [ml]"," मराठी    [mr]","Bahasa Melayu    [ms]","norsk (bokmål)    [nb]","Nederlands    [nl]","ਪੰਜਾਬੀ    [pa]","polski    [pl]","português (Brasil)    [pt-BR]","português (Portugal)    [pt-PT]","română    [ro]","русский    [ru]","slovenčina    [sk]","svenska    [sv]"," தமிழ்    [ta]"," తెలుగు    [te]"," ไทย    [th]","Türkçe    [tr]","中文(简体)    [zh-Hans]","中文(繁體)    [zh-Hant]"]
 }
 
 
