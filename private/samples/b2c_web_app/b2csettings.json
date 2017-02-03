@@ -1,9 +1,8 @@
 {
-    "tenant_name" : "cpimtestloctc.onmicrosoft.com",
-    "client_id": "2fb8d49d-d789-4fba-aaea-27ce1d35c76c",
+    "tenant_name" : "<tenant_name>.onmicrosoft.com",
+    "client_id": "<Application ID>",
     "redirect_uri":"https://localhost:855/b2cresponse.htm",
     "home_uri":"https://localhost:855/default.htm",
-    "client_secret" : "xO;XE07m^ZmbJPnD",
     "policy":[
         "B2C_1_si",
         "B2C_1_si_mfa",
@@ -29,11 +28,6 @@
          "code id_token token",
          "id_token token"
          ],
-    "scope":["openid",
-     "https://webscouttst.onmicrosoft.com/dndresource.read",
-     "https://webscouttst.onmicrosoft.com/dndresource.write",
-     "https://www.example.com/profile.write",
-     "https://www.example.com/profile.read" ],
     "state":"this is a js sample app",
     "ui_locales":[" বাংলা    [bn]","čeština    [cs]","dansk    [da]","Deutsch    [de]","Ελληνικά    [el]","English    [en]","español    [es]","suomi    [fi]","français    [fr]","ગુજરાતી    [gu]","עברית    [he]"," हिंदी    [hi]","hrvatski    [hr]","magyar    [hu]","italiano    [it]","日本語    [ja]","ಕನ್ನಡ    [kn]","한국어    [ko]"," മലയാളം    [ml]"," मराठी    [mr]","Bahasa Melayu    [ms]","norsk (bokmål)    [nb]","Nederlands    [nl]","ਪੰਜਾਬੀ    [pa]","polski    [pl]","português (Brasil)    [pt-BR]","português (Portugal)    [pt-PT]","română    [ro]","русский    [ru]","slovenčina    [sk]","svenska    [sv]"," தமிழ்    [ta]"," తెలుగు    [te]"," ไทย    [th]","Türkçe    [tr]","中文(简体)    [zh-Hans]","中文(繁體)    [zh-Hant]"]
 }
