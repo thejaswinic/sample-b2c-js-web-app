@@ -2,17 +2,22 @@
     "tenant_name" : "cpimtestloctc.onmicrosoft.com",
     "client_id": "2fb8d49d-d789-4fba-aaea-27ce1d35c76c",
     "redirect_uri":"https://localhost:855/b2cresponse.htm",
+    "home_uri":"https://localhost:855/default.htm",
     "client_secret" : "xO;XE07m^ZmbJPnD",
     "policy":[
         "B2C_1_si",
-        "B2C_1_si_mfa"
+        "B2C_1_si_mfa",
         "B2C_1_su",
         "B2C_1_su_mfa",
         "B2C_1_susi",
         "B2C_1_susi_mfa",
         "B2C_1_susi_optional_email",
+        "B2C_1_susi_loc_enabled",
+        "B2C_1_susi_pageui_mfa",
+        "B2C_1_pe",
         "B2C_1_pr",
-        "B2C_1_pr_mfa"
+        "B2C_1_pr_mfa",
+        "B2C_1_xyz_policy"
         ],
     "response_types":[
         "code",

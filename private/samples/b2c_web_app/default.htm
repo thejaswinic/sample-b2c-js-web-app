@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<title>Home</title>
+<head>
+    <h3 style="text-align: center">B2C WebApp</h3>
+    <style>
+        html {
+        display: table;
+        margin: auto;
+        }
+
+        body {
+            display: table-cell;
+            vertical-align: middle;
+        }
+        tr.spaceUnder > td
+        {
+        padding-bottom: 10px;
+        }
+    </style>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script>
+
+        $(document).ready(function () {
+            console.log("ready!");
+            Init();
+        });
+
+        function Init() {
+            $.get("b2csettings.json",
+                function (data) {
+                    $('#tenantSpan').text(data.tenant_name);
+                    $.each(data.response_types, function (i, value) {
+                        $('#responseTypeSelect').append($('<option>').text(value).attr('value', value));
+                    });
+
+                    $("#responseTypeSelect").val("id_token");
+
+                    $.each(data.policy, function (i, value) {
+                        $('#policyNameSelect').append($('<option>').text(value).attr('value', value));
+                    });
+
+                    $.each(data.ui_locales, function (i, value) {
+                        $('#langSelect').append($('<option>').text(value).attr('value', value.replace(/(^.*\[|\].*$)/g, '')));
+                    });
+                    $('#langSelect').prop("selectedIndex", -1);
+                    $("#scope").val("openid");
+                });
+        }
+
+        function login() {
+            var policyName = $('#policyNameSelect').val();
+            var ui_locale = $('#langSelect').val();
+            var ui_locale_str = "default lang";
+            if (ui_locale != null) {
+                ui_locale_str = "ui_locales=" + ui_locale;
+            }
+            $.get("b2csettings.json",
+                function (data) {
+                    var stateVal = encodeURIComponent("&policyName=" + policyName + "&" + ui_locale_str);
+                    //sending policyName as state in request url so that response contains state
+                    window.location = "https://login.microsoftonline.com/" + data.tenant_name + "/oauth2/v2.0/authorize?p=" + policyName +
+                        "&scope=" + $('#scope').val() +
+                        "&response_type=" + $('#responseTypeSelect').val() +
+                        "&redirect_uri=" + data.redirect_uri +
+                        "&client_id=" + data.client_id +
+                        "&state=" + stateVal +
+                        "&" + ui_locale_str;
+                });
+        }
+
+        function corsTest() {
+            $.get("https://localhost:85/signinsignuppage.htm", function (data) {
+                $('#dump').html(data);
+            });
+        }
+    </script>
+</head>
+<body>
+    <br>
+    <br>
+    <br>
+    <br>
+    <table id="detailsTable">
+         <tr class="spaceUnder">
+            <td style="padding-right: 20px" align="right">
+               <label for="tenantSpan">Tenant Name</label>
+            </td>
+            <td>
+                <span id="tenantSpan" class="label label-default"></span>
+            </td>
+        </tr>
+        <tr class="spaceUnder">
+            <td style="padding-right: 20px" align="right">
+               <label for="responseTypeSelect">Response type</label>
+            </td>
+            <td>
+                <select class="form-control" id="responseTypeSelect"></select>
+            </td>
+        </tr>
+        <tr class="spaceUnder">
+            <td style="padding-right: 20px" align="right">
+               <label for="scope">Scope</label>
+            </td>
+            <td>
+                <input type="text" class="form-control" id="scope">
+            </td>
+        </tr>
+        <tr class="spaceUnder">
+            <td style="padding-right: 20px" align="right">
+                <label for="policyNameSelect">Policy Name</label>
+            </td>
+            <td>
+                <select class="form-control" id="policyNameSelect"></select>
+            </td>
+         </tr>
+         <tr class="spaceUnder">
+            <td style="padding-right: 20px" align="right">
+                <label for="langSelect">Target Language</label>
+            </td>
+            <td>
+                <select class="form-control" id="langSelect"></select>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <br>
+    <div style="text-align: center">
+    <button id="login" class="btn btn-default" onclick="login()" style="">Click to SignIn or SignUp</button>
+    </div>
+    <div style="text-align: center">
+    <button id="testCors" class="btn btn-default" style="display: none" onclick="corsTest()" style="position: absolute">Test Cors</button>
+    </div>
+    <br>
+</body>
+</html>

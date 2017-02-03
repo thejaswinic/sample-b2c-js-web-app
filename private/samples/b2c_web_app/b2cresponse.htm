@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<title>B2C Response</title>
+<head>
+    <style>
+        html {
+        display: table;
+        margin: auto;
+        }
+        body {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    </style>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script>
+        var jsonData = "";
+        var policyName = "";
+        var ui_locale = "";
+
+        $(document).ready(function () {
+            console.log("ready!");
+             $.get("b2csettings.json", function (data) {
+                jsonData = data;
+                 Init();
+             });
+           
+        });
+
+        function Init() {
+
+            
+            var err = getErrorDetails();
+            if (err != null) {
+                $('#errortable tr:last').after('<tr><td>' + err.error + '</td><td>' + decodeURIComponent(err.desc).split('+').join(' ') + '</td></tr>');
+                $("#claimstable").hide();
+                $("#detailsTable").hide();
+                $("#home").show();
+                return;
+            }
+            $('#errortable').hide();
+
+            var state = getState();
+            policyName = getParam("policyName", decodeURIComponent(state));
+            ui_locale = getParam("ui_locales", decodeURIComponent(state));
+
+            if (ui_locale != null) {
+                ui_locale = "ui_locales=" + ui_locale;
+            }
+            else {
+                ui_locale = "default lang";
+            }
+            debugger;
+            $('#tenantSpan').text(jsonData.tenant_name);
+            $.each(jsonData.policy, function (i, value) {
+                $('#profEditPolicySelect').append($('<option>').text(value).attr('value', value));
+            });
+            $('#scope').val("");           
+
+            var resultJSON = decodeClaims();
+
+            $.each(resultJSON, function (k, v) {
+                if (k == "exp" || k == "nbf" || k == "iat" || k == "auth_time") {
+                    v = new Date(v * 1000);
+                }
+                $('#claimstable tr:last').after('<tr><td>' + k + '</td><td>' + v + '</td></tr>');
+            });
+        }
+
+        function getToken() {
+            $.get("b2csettings.json", function (data) {
+                var policyName = getState();
+                $('#scope').val("https://webscouttst.onmicrosoft.com/dndresource/read");
+
+                var url = "https://login.microsoftonline.com/" + data.tenant_name + "/oauth2/v2.0/token" +
+                    "?p=" + policyName +
+                    "&grant_type=authorization_code" +
+                    "&scope=" + $('#scope').val() +
+                    "&client_id=" + data.client_id +
+                    "&redirect_uri=" + data.redirect_uri +
+                    "&code=" + getCode() +
+                    "&client_secret=" + data.client_secret;
+                $("#tokenForm").attr("action", url);
+            });
+        }
+
+        function editProfile() {
+            var editPolicyName = $('#profEditPolicySelect').val();
+            var stateVal = encodeURIComponent("&policyName=" + editPolicyName + "&" + ui_locale);
+            window.location = "https://login.microsoftonline.com/" + jsonData.tenant_name + "/oauth2/v2.0/authorize?p=" + editPolicyName +
+                "&scope=" + "openid" +
+                "&response_type=" + "id_token" +
+                "&redirect_uri=" + jsonData.redirect_uri +
+                "&client_id=" + jsonData.client_id +
+                "&state=" + stateVal +
+                "&" + ui_locale;
+        }
+
+        function logout() {
+            window.location = "https://login.microsoftonline.com/" + jsonData.tenant_name + "/oauth2/v2.0/logout?p=" + policyName +
+                "&post_logout_redirect_uri=" + jsonData.home_uri;
+        }
+
+        function getState() {
+            // my state returns the policy Name
+            var hashVal = window.location.hash.substr(1);
+            var state = hashVal.split('&')[0].substr(6);
+            return state;
+            // return getParam("state", window.location.search);
+        }
+
+        function getCode() {
+            /*var hashVal = window.location.hash.substr(1);
+            var code = hashVal.split('&')[1].substr(5);
+            return code;*/
+            return getParam("code", window.location.search);
+        }
+
+        function decodeClaims() {
+            /*var hashVal = window.location.hash.substr(1);
+            if(hashVal.indexOf("id_token") == -1)
+            {
+                return;
+            }
+            var idToken = hashVal.split('&')[1].substr(9);
+            var decoded = jwt_decode(idToken);
+            return decoded;*/
+            var idToken = getParam("id_token", window.location.search);
+            var decoded = jwt_decode(idToken);
+            console.log("Token:" + decoded);
+            return decoded;
+        }
+
+        function getParam(name, url) {
+            if (!url) url = location.href;
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(url);
+            return results == null ? null : results[1];
+        }
+
+        function getErrorDetails() {
+            var hashValerror = window.location.hash.substr(1);
+            var error = hashValerror.split('&')[0].substr(0, 5);
+            if (error == "error") {
+                errorName = hashValerror.split('&')[0].split('=')[1];
+                errorDesc = hashValerror.split('&')[1].split('=')[1];
+                return { "error": errorName, "desc": errorDesc };
+            }
+            return null;
+        }
+
+        function onchange_policy() {
+            $('#editProfile').removeAttr('disabled');
+        }
+
+    </script>
+</head>
+<body>
+    <br>
+    <br>
+    <a id="home" href="default.htm" style="display: none">Go to Home Page</a>
+    <table id="detailsTable">
+        <tr>
+            <td style="padding-right: 10px" align="right">
+                <label for="tenantSpan" style="margin-right: 10px">Tenant Name</label>
+            </td>
+            <td>
+                <span id="tenantSpan" class="label label-default"></span>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 30px;padding-right: 10px">
+                <select class="form-control" id="profEditPolicySelect" style="margin-right: 20px" onchange="onchange_policy()">
+                <option selected disabled>Choose Profile Edit Policy</option>
+                </select>
+            </td>
+            <td style="padding-top: 30px;padding-right: 10px">
+                <button id="editProfile" style="margin-right: 20px" class="btn btn-default" onclick="editProfile()" disabled>Edit Profile</button>
+            </td>
+            <td style="padding-top: 30px">
+                <button id="logout" style="padding-right: 20px" class="btn btn-default" onclick="logout()">Logout</button>
+            </td>
+        </tr>
+        <tr style="display: none">
+            <td style="padding-top: 20px;margin-right: 10px">
+                <button id="logout" style="margin-right: 20px" class="btn btn-default" onclick="logout()">Logout</button>
+            </td>
+            <td style="padding-top: 20px;margin-right: 10px">
+                <form id="tokenForm" method="POST" action="">
+                <button id="gettoken" class="btn btn-default" onclick="getToken()">Get Access Token</button>
+            </form>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <div style="width:100%">
+        <table id="claimstable" class="table table-striped" style="width:500px">
+            <tr>
+                <th>Claim Name</th>
+                <th>Claim Value</th>
+            </tr>
+            <tbody>
+            </tbody>
+        </table>
+
+        <table id="errortable" class="table table-striped" style="width:500px">
+            <tr>
+                <th>Error</th>
+                <th>Error Description</th>
+            </tr>
+            <tbody>
+            </tbody>
+        </table>
+
+        <div class="form-group" style="display: none">
+            <label for="scope">Scope:</label>
+            <input type="text" class="form-control" id="scope">
+        </div>
+    </div>
+</body>
+</html>
